@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cinematic Collection</title>
+    
+    <!-- Performance Optimizations -->
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="style">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(220,38,38,0.7);
+            border-radius: 4px;
+        }
+        
+        /* Film Grain Effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 9999;
+        }
+    </style>
+    
+    <!-- Tailwind Custom Configuration -->
+    <script>
+    tailwind.config = {
+        theme: {
+            fontFamily: {
+                'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+            },
+            extend: {
+                colors: {
+                    'cinema-dark': '#0F1123',
+                    'cinema-mid': '#1A2238',
+                    'cinema-light': '#2C3E50'
+                },
+                backgroundImage: {
+                    'cinema-gradient': 'linear-gradient(to bottom right, #0F1123, #1A2238, #2C3E50)'
+                },
+                animation: {
+                    'film-pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    'subtle-bounce': 'bounce 2s ease-in-out infinite'
+                },
+                boxShadow: {
+                    'cinema-card': '0 15px 35px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.1)'
+                }
+            }
+        }
+    }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-[#0F1123] via-[#1A2238] to-[#2C3E50] text-white font-sans antialiased selection:bg-red-500 selection:text-white">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Advanced Cinematic Header -->
+        <header class="relative mb-12 text-center group">
+            <div class="absolute -top-4 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-50 group-hover:opacity-100 transition-all duration-500"></div>
+            <h1 class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 tracking-tight transform group-hover:scale-105 transition-transform duration-300">
+                🎬 Cinematic Collection
+            </h1>
+        </header>
+
+        <!-- Enhanced Search Section -->
+        <section class="mb-12 space-y-6">
+            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Text Search with Advanced Styling -->
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="text-search"
+                        placeholder="Search movies by title or genre" 
+                        class="w-full px-6 py-4 bg-white/10 backdrop-blur-lg border-2 border-white/20 rounded-full text-white placeholder-gray-300 focus:ring-4 focus:ring-red-500/50 transition duration-300"
+                    >
+                    <i class="fas fa-search absolute right-6 top-1/2 -translate-y-1/2 text-white/50"></i>
+                </div>
+
+                <!-- Image Search with Elegant Design -->
+                <div class="relative">
+                    <label class="block">
+                        <input 
+                            type="file" 
+                            id="image-search" 
+                            accept="image/*" 
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        >
+                        <div class="w-full px-6 py-4 bg-white/10 backdrop-blur-lg border-2 border-white/20 rounded-full text-white flex items-center justify-between hover:border-red-500 transition duration-300">
+                            <span class="text-gray-300">Upload Movie Poster</span>
+                            <i class="fas fa-upload text-white/50"></i>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Movie Grid with Advanced Styling -->
+        <section id="movies-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {% for movie in movies %}
+            <div class="movie-card relative group">
+                <div class="bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden shadow-cinema-card transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                    {% if movie.poster_data %}
+                    <a href="/movie/{{ loop.index0 }}">
+                    <img
+                        src="data:image/jpeg;base64,{{ movie.poster_data }}"
+                        alt="{{ movie.title }} Poster"
+                        class="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                    </a>
+                    {% else %}
+                    <div class="w-full h-64 bg-gray-800 flex items-center justify-center">
+                        <p class="text-gray-500">No Poster</p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="p-5">
+                        <h2 class="text-xl font-bold mb-2 truncate text-white group-hover:text-red-500 transition-colors">
+                            {{ movie.title }}
+                        </h2>
+                        <p class="text-gray-300 line-clamp-3 text-sm">
+                            {{ movie.overview }}
+                        </p>
+                    </div>
+                    
+                    <!-- Action Buttons with Advanced Styling -->
+                    <div class="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <a href="/edit_movie/{{ loop.index0 }}" class="bg-white/20 backdrop-blur-lg p-2 rounded-full hover:bg-blue-500/50 transition">
+                            <i class="fas fa-edit text-white"></i>
+                        </a>
+                        <button 
+                            onclick="deleteMovie('{{ loop.index0 }}')" 
+                            class="bg-white/20 backdrop-blur-lg p-2 rounded-full hover:bg-red-500/50 transition"
+                        >
+                            <i class="fas fa-trash text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+        <!-- Search Results Area -->
+        <section id="search-results" class="hidden mt-12">
+            <h2 class="text-3xl font-bold mb-8 text-center">Search Results</h2>
+            <div id="results-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
+        </section>
+    </div>
+
+    <script>
+        // Enhanced JavaScript with More Robust Interactions
+        document.addEventListener('DOMContentLoaded', () => {
+            const textSearch = document.getElementById('text-search');
+            const moviesGrid = document.getElementById('movies-grid');
+            const searchResults = document.getElementById('search-results');
+            const resultsContainer = document.getElementById('results-container');
+
+            // Enhanced Search Functionality
+            function performSearch(searchTerm, searchType = 'text') {
+                const movieCards = document.querySelectorAll('.movie-card');
+                
+                if (searchType === 'text') {
+                    movieCards.forEach(card => {
+                        const title = card.querySelector('h2').textContent.toLowerCase();
+                        const overview = card.querySelector('p').textContent.toLowerCase();
+                        
+                        if (title.includes(searchTerm) || overview.includes(searchTerm)) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+                }
+            }
+
+            // Text Search Handler
+            textSearch.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                performSearch(searchTerm);
+            });
+
+            // Image Search Handler
+        const imageSearch = document.getElementById('image-search');
+        imageSearch.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('poster', file);
+
+                // Amélioration de la recherche par image
+                fetch('/search_by_poster', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(results => {
+                    const moviesGrid = document.getElementById('movies-grid');
+                    moviesGrid.innerHTML = ''; // Clear existing movies
+
+                    if (results.length === 0) {
+                        moviesGrid.innerHTML = `
+                            <div class="col-span-full text-center text-white/70">
+                                <i class="fas fa-film text-6xl mb-4"></i>
+                                <p>No similar movies found</p>
+                            </div>
+                        `;
+                    } else {
+                        console.log('Results:', results);
+                        results.forEach(movie => {
+    if (movie.poster_data) {
+        const movieCard = document.createElement('div');
+        movieCard.classList.add('movie-card', 'relative', 'group');
+        movieCard.innerHTML = `
+            <div class="bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105">
+                <img 
+                    src="data:image/jpeg;base64,${movie.poster_data}" 
+                    alt="${movie.title} Poster" 
+                    class="w-full h-64 object-cover"
+                />
+                <div class="p-5">
+                    <h2 class="text-xl font-bold mb-2 truncate text-white">
+                        ${movie.title}
+                    </h2>
+                    <p class="text-gray-300 line-clamp-3 text-sm">
+                        Similarity: ${(movie.similarity * 100).toFixed(2)}%
+                    </p>
+                </div>
+            </div>
+        `;
+        moviesGrid.appendChild(movieCard);
+    } else {
+        // Gestion des films sans poster
+        const movieCard = document.createElement('div');
+        movieCard.classList.add('movie-card', 'relative', 'group');
+        movieCard.innerHTML = `
+            <div class="bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden shadow-lg">
+                <div class="w-full h-64 bg-gray-800 flex items-center justify-center">
+                    <p class="text-gray-500">No Poster Available</p>
+                </div>
+                <div class="p-5">
+                    <h2 class="text-xl font-bold mb-2 truncate text-white">
+                        ${movie.title}
+                    </h2>
+                    <p class="text-gray-300 line-clamp-3 text-sm">
+                        Similarity: ${(movie.similarity * 100).toFixed(2)}%
+                    </p>
+                </div>
+            </div>
+        `;
+        moviesGrid.appendChild(movieCard);
+    }
+});
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error searching by poster');
+                });
+            }
+        });
+
+            // Delete Movie Function
+            window.deleteMovie = (movieIndex) => {
+                if (confirm('Are you sure you want to delete this movie?')) {
+                    fetch(`/delete_movie/${movieIndex}`, { method: 'DELETE' })
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.reload();
+                            } else {
+                                alert('Error deleting the movie');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error deleting the movie');
+                        });
+                }
+            };
+        });
+    </script>
+</body>
+</html>
